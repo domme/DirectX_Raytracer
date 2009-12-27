@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "DX_test1.h"
+#include "D3D.h"
 #include "D3D10.h"
 #include "D3DX10.h"
 #include <iostream>
@@ -12,9 +13,8 @@ using namespace std;
 #define MAX_LOADSTRING 100
 
 //D3D variables
-ID3D10Device*				pd3dDevice = NULL;
-ID3D10RenderTargetView*		pBackBuffer = NULL;
-IDXGISwapChain*				pSwapChain = NULL;
+D3D direct3D;
+
 
 //Raytracing Variables
 ID3D10Texture2D*			pTraceTexture = NULL;	
@@ -32,8 +32,6 @@ ATOM				MyRegisterClass(HINSTANCE hInstance);
 BOOL				InitInstance(HINSTANCE, int);
 LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
-HRESULT				initD3D(HINSTANCE hInstance);
-void				render();
 void				trace();
 void				initTracing();
 
@@ -62,7 +60,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 	hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_DX_TEST1));
 
 
-	if(FAILED(initD3D(hInstance))) 
+	if(FAILED(direct3D.init(ghWnd, hInstance))) 
 		MessageBox(ghWnd, L"D3D init failed", L"FAILURE", MB_OK);
 
 	initTracing();
@@ -78,7 +76,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 				TranslateMessage(&msg);
 				DispatchMessage(&msg);
 
-				render();
+				direct3D.render();
 			}
 			
 
@@ -88,68 +86,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 	return (int) msg.wParam;
 }
 
-void render(void)
-{
-	float clearColor[4] = {0.0f, 0.0f, 0.0f, 1.0f};
-	pd3dDevice->ClearRenderTargetView(pBackBuffer, clearColor);
-
-	
-
-	pSwapChain->Present(0, 0);
-}
 
 
-HRESULT initD3D(HINSTANCE hInstance)
-{
-	RECT rc;
-	GetClientRect(ghWnd, &rc);
-
-	UINT width = rc.right - rc.left;
-	UINT height = rc.bottom - rc.top;
-
-	DXGI_SWAP_CHAIN_DESC desc;
-	ZeroMemory( &desc, sizeof(desc));
-	desc.BufferCount = 1;
-	desc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	desc.BufferDesc.Height = height;
-	desc.BufferDesc.Width = width;
-	desc.BufferDesc.RefreshRate.Numerator = 60;
-	desc.BufferDesc.RefreshRate.Denominator = 1;
-	desc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	desc.OutputWindow = ghWnd;
-	desc.SampleDesc.Count = 1;
-	desc.SampleDesc.Quality = 0;
-	desc.Windowed = TRUE;
-
-	HRESULT hr = D3D10CreateDeviceAndSwapChain(NULL, D3D10_DRIVER_TYPE_HARDWARE, NULL, D3D10_CREATE_DEVICE_DEBUG, D3D10_SDK_VERSION, &desc, &pSwapChain, &pd3dDevice);
-
-	if(FAILED(hr))
-	{
-		MessageBox(ghWnd, L"Device or SwapChain initialisation failed!", L"Initialisation error", MB_OK);
-	}
-
-	ID3D10Texture2D* lpBackBuffer;
-	hr = pSwapChain->GetBuffer(0, __uuidof( ID3D10Texture2D ), ( LPVOID* ) &lpBackBuffer);
-	if( FAILED(hr) )
-		return hr;
-
-	hr = pd3dDevice->CreateRenderTargetView( lpBackBuffer, NULL, &pBackBuffer);
-	lpBackBuffer->Release();
-	if(FAILED(hr))
-		return hr;
-
-	pd3dDevice->OMSetRenderTargets(1, &pBackBuffer, NULL);
-
-	D3D10_VIEWPORT vp;
-	vp.Width = width;
-	vp.Height = height;
-	vp.MinDepth = 0.0f;
-	vp.MaxDepth = 1.0f;
-	vp.TopLeftX = 0;
-	vp.TopLeftY = 0;
-	pd3dDevice->RSSetViewports(1, &vp);
-	
-}
 
 void initTracing()
 {
@@ -173,7 +111,7 @@ void initTracing()
 	d.BindFlags = D3D10_BIND_SHADER_RESOURCE;
 	d.CPUAccessFlags = D3D10_CPU_ACCESS_WRITE;
 
-	if(FAILED(pd3dDevice->CreateTexture2D(&d, NULL, &pTraceTexture)))
+	if(FAILED(direct3D.pd3dDevice->CreateTexture2D(&d, NULL, &pTraceTexture)))
 		MessageBox(ghWnd, L"Failed to create Trace-Texture", L"ASSHOLE", MB_OK);
 
 }
