@@ -182,6 +182,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Raytracer.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\stdafx.cpp"
 				>
 				<FileConfiguration
@@ -213,6 +217,10 @@
 			</File>
 			<File
 				RelativePath=".\DX_test1.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Raytracer.h"
 				>
 			</File>
 			<File

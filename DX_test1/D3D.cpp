@@ -65,7 +65,7 @@ HRESULT D3D::init(HWND &hWnd, HINSTANCE &hInstance)
 void D3D::render(void)
 {
 	float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f};
-	pd3dDevice->ClearRenderTargetView(pBackBuffer, clearColor);
+	//pd3dDevice->ClearRenderTargetView(pBackBuffer, clearColor);
 
 	pSwapChain->Present(0,0);
 }

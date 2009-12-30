@@ -3,7 +3,8 @@
 
 #include "stdafx.h"
 #include "DX_test1.h"
-#include "D3D.h"
+
+#include "Raytracer.h"
 #include "D3D10.h"
 #include "D3DX10.h"
 #include <iostream>
@@ -12,12 +13,11 @@ using namespace std;
 
 #define MAX_LOADSTRING 100
 
-//D3D variables
-D3D direct3D;
+
 
 
 //Raytracing Variables
-ID3D10Texture2D*			pTraceTexture = NULL;	
+Raytracer raytracer;
 
 
 
@@ -32,8 +32,7 @@ ATOM				MyRegisterClass(HINSTANCE hInstance);
 BOOL				InitInstance(HINSTANCE, int);
 LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
-void				trace();
-void				initTracing();
+
 
 int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow)
 {
@@ -60,11 +59,10 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 	hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_DX_TEST1));
 
 
-	if(FAILED(direct3D.init(ghWnd, hInstance))) 
-		MessageBox(ghWnd, L"D3D init failed", L"FAILURE", MB_OK);
-
-	initTracing();
-
+	//Raytracer- intialisierungen
+	raytracer = Raytracer(ghWnd, hInstance);
+	raytracer.trace();
+	
 	// Hauptnachrichtenschleife:
 	while(WM_QUIT != msg.message)
 	{
@@ -76,7 +74,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 				TranslateMessage(&msg);
 				DispatchMessage(&msg);
 
-				direct3D.render();
+				raytracer.render();
 			}
 			
 
@@ -87,34 +85,6 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 }
 
 
-
-
-void initTracing()
-{
-	RECT rc;
-	GetClientRect(ghWnd, &rc);
-
-	UINT width = rc.right - rc.left;
-	UINT height = rc.bottom - rc.top;
-
-	
-	D3D10_TEXTURE2D_DESC d;
-	d.Width = width;
-	d.Height = height;
-	d.MipLevels = 1;
-	d.ArraySize = 1;
-	d.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	d.SampleDesc.Count = 1;
-	d.SampleDesc.Quality = 0;
-	d.MiscFlags = 0;
-	d.Usage = D3D10_USAGE_DYNAMIC;
-	d.BindFlags = D3D10_BIND_SHADER_RESOURCE;
-	d.CPUAccessFlags = D3D10_CPU_ACCESS_WRITE;
-
-	if(FAILED(direct3D.pd3dDevice->CreateTexture2D(&d, NULL, &pTraceTexture)))
-		MessageBox(ghWnd, L"Failed to create Trace-Texture", L"ASSHOLE", MB_OK);
-
-}
 
 ATOM MyRegisterClass(HINSTANCE hInstance)
 {
