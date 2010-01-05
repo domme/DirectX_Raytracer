@@ -52,7 +52,7 @@ void Raytracer::trace(void)
 	sourceRegion.back = 1;
 
 	d3d.pd3dDevice->CopySubresourceRegion(pBackBufferTexture, 0, 0, 0, 0, pTraceTexture, 0, &sourceRegion);
-//	d3d.pd3dDevice->CopyResource(pBackBufferTexture, pTraceTexture);
+
 
 }
 
