@@ -1,5 +1,9 @@
 #include "StdAfx.h"
 #include "Raytracer.h"
+#include "Camera.h"
+#include <vector>
+#include "Sphere.h"
+#include "Light.h"
 
 Raytracer::Raytracer(void)
 {
@@ -12,6 +16,23 @@ Raytracer::Raytracer(HWND &hWnd, HINSTANCE &hInstance)
 	this->hInstance = hInstance;
 	if(FAILED(d3d.init(hWnd, hInstance))) 
 		MessageBox(hWnd, L"D3D init failed", L"FAILURE", MB_OK);
+
+	//Create camera for later use in the scene
+	D3DXVECTOR3 camPosition = D3DXVECTOR3(0.0f, 0.0f, - 20.0f);
+	D3DXVECTOR3 camLookAt = D3DXVECTOR3(0.0f, 0.0f, 20.0f);
+	D3DXVECTOR3 camUp = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
+	Camera cam = Camera(camPosition, camLookAt, camUp);
+	
+	//Create list of objects to appear in the scene
+	vector<Mesh*> objectList;
+	objectList.push_back(&Sphere(Material(D3DXCOLOR(255.0f, 0.0f, 0.0f, 255.0f)), D3DXVECTOR3(0.0f, 0.0f, 10.0f), 10.0f));
+
+	//Create list of lights to luminate the scene
+	vector<Light*> lightList;
+	lightList.push_back(&Light());
+
+	//and finally create the scene we're going to raytrace
+	scene = Scene(objectList,lightList, cam);
 }
 
 void Raytracer::trace(void)
@@ -82,11 +103,12 @@ void Raytracer::initTracing(void)
 
 	if(FAILED(d3d.pd3dDevice->CreateTexture2D(&traceTexDesc, NULL, &pTraceTexture)))
 		MessageBox(hWnd, L"Failed to create Trace-Texture", L"ASSHOLE", MB_OK);
+
+	
 }
 
 void Raytracer::render(void)
 {
-
 	this->d3d.render();
 }
 

@@ -12,9 +12,14 @@ Sphere::Sphere(Material &material, D3DXVECTOR3 &position, float radius) : Mesh(m
 	this->radius = radius;
 }
 
-IntersectionInfo Mesh::testIntersection(Ray &ray)
+IntersectionInfo Sphere::testIntersection(Ray &ray)
 {
 	return IntersectionInfo();
+}
+
+D3DXCOLOR Sphere::shade(Ray &ray, vector<Light*> &lightList, vector<Mesh*> &objectList)
+{
+	return this->material.color;
 }
 
 Sphere::~Sphere(void)

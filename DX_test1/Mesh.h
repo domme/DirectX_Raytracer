@@ -3,6 +3,10 @@
 #include "D3D.h"
 #include "Ray.h"
 #include "IntersectionInfo.h"
+#include <vector>
+#include "Light.h"
+
+using namespace std;
 
 class Mesh
 {
@@ -15,6 +19,8 @@ public:
 	D3DXVECTOR3 position;
 
 	virtual IntersectionInfo testIntersection(Ray &ray) = 0;
+
+	virtual D3DXCOLOR shade(Ray &ray, vector<Light*> &lightList, vector<Mesh*> &objectList) = 0;
 	
 	
 };

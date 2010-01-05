@@ -11,7 +11,6 @@ Mesh::Mesh(Material &material, D3DXVECTOR3 &position)
 {
 	this->material = material;
 	this->position = position;
-
 }
 
 

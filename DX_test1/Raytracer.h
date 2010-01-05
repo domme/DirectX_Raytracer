@@ -1,5 +1,6 @@
 #pragma once
 #include "D3D.h"
+#include "Scene.h"
 
 class Raytracer
 {
@@ -14,6 +15,8 @@ public:
 
 
 private:
+
+	Scene scene;
 	D3D d3d;
 	HWND hWnd;
 	HINSTANCE hInstance;
