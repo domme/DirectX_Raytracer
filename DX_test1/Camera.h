@@ -5,7 +5,7 @@ class Camera
 {
 public:
 	Camera(void);
-	Camera(D3DXVECTOR3 &forward, D3DXVECTOR3 &up);
+	Camera(D3DXVECTOR3 &position,D3DXVECTOR3 &poi, D3DXVECTOR3 &up);
 	~Camera(void);
 
 	D3DXVECTOR3 position;

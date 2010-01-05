@@ -190,6 +190,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Light.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Material.cpp"
 				>
 			</File>
@@ -253,6 +257,10 @@
 			</File>
 			<File
 				RelativePath=".\IntersectionInfo.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Light.h"
 				>
 			</File>
 			<File

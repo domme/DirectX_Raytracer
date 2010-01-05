@@ -13,9 +13,7 @@ public:
 
 	Material material;
 	D3DXVECTOR3 position;
-	
 
-protected:
 	virtual IntersectionInfo testIntersection(Ray &ray) = 0;
 	
 	
