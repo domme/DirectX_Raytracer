@@ -1,6 +1,7 @@
 #pragma once
 #include "D3D.h"
 #include "Scene.h"
+#include "Ray.h"
 
 class Raytracer
 {
@@ -27,6 +28,7 @@ private:
 	D3D10_BOX sourceRegion;
 
 	void initTracing(void);
+	Ray shootNewRay(int x, int y);
 	
 
 };

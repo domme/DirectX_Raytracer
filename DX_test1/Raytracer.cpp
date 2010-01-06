@@ -52,6 +52,40 @@ std::wstring Raytracer::s2ws(const std::string& s)
     return r;
 }
 
+Ray Raytracer::shootNewRay(int x, int y)
+{
+	float worldX, worldY;
+
+	worldX = ((2.0f * x) / traceTexDesc.Width) - 1;
+	worldY = -((2.0f * y) / traceTexDesc.Height) + 1;
+	
+	D3D10_VIEWPORT viewport;
+	d3d.pd3dDevice->RSGetViewports(1, &viewport);
+
+	D3DXVECTOR3 v0;
+	D3DXVec3Unproject(&v0, &D3DXVECTOR3(worldX, worldY, 0), &viewport, &scene.camera.projection, &scene.camera.view, &D3DXMatrixIdentity(NULL));
+
+	D3DXVECTOR3 v1;
+	D3DXVec3Unproject(&v1, &D3DXVECTOR3+(worldX, worldY, 1), &viewport, &scene.camera.projection, &scene.camera.view, &D3DXMatrixIdentity(NULL));
+
+	
+	D3DXVECTOR3 rayDirection = v1 - v0;
+	D3DXVECTOR3 normRayDir;
+	D3DXVec3Normalize(&normRayDir, &rayDirection);
+
+	
+	/*stringstream s;
+	s << "World Values: ";
+	s << worldX;
+	s << " ";
+	s << worldY;
+	s << endl;
+	wstring ws = s2ws(s.str());
+	OutputDebugString(reinterpret_cast<LPCWSTR>(ws.c_str()));*/
+
+	return Ray(scene.camera.position, normRayDir);
+}
+
 void Raytracer::trace(void)
 {
 	initTracing();
@@ -72,18 +106,18 @@ void Raytracer::trace(void)
 			pTexels[rowStart + colStart + 1] = 128; // Green
 			pTexels[rowStart + colStart + 2] = 64;  // Blue
 			pTexels[rowStart + colStart + 3] = 32;  // Alpha
-			
-		}
 
+			shootNewRay(row, col);
+		}
 		
-			string rowStartString = "rowStart: ";
+			/*string rowStartString = "rowStart: ";
 			stringstream s;
 			s << rowStartString;
 			s << row;
 			s << " ";
 			s << endl;
 			wstring rSS = s2ws(s.str());
-			OutputDebugString(reinterpret_cast<LPCWSTR>(rSS.c_str()));
+			OutputDebugString(reinterpret_cast<LPCWSTR>(rSS.c_str()));*/
 	}
 
 	pTraceTexture->Unmap(D3D10CalcSubresource(0, 0, 1));
@@ -104,6 +138,8 @@ void Raytracer::trace(void)
 
 
 }
+
+
 
 void Raytracer::initTracing(void)
 {
