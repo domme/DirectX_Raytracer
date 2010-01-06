@@ -16,6 +16,7 @@ public:
 
 private:
 
+	std::wstring s2ws( const std::string &s);
 	Scene scene;
 	D3D d3d;
 	HWND hWnd;

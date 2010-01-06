@@ -4,6 +4,11 @@
 #include <vector>
 #include "Sphere.h"
 #include "Light.h"
+#include <iostream>
+#include <string>
+#include <sstream>
+
+using namespace std;
 
 Raytracer::Raytracer(void)
 {
@@ -35,6 +40,18 @@ Raytracer::Raytracer(HWND &hWnd, HINSTANCE &hInstance)
 	scene = Scene(objectList,lightList, cam);
 }
 
+std::wstring Raytracer::s2ws(const std::string& s)
+{
+    int len;
+    int slength = (int)s.length() + 1;
+    len = MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, 0, 0); 
+    wchar_t* buf = new wchar_t[len];
+    MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, buf, len);
+    std::wstring r(buf);
+    delete[] buf;
+    return r;
+}
+
 void Raytracer::trace(void)
 {
 	initTracing();
@@ -55,7 +72,18 @@ void Raytracer::trace(void)
 			pTexels[rowStart + colStart + 1] = 128; // Green
 			pTexels[rowStart + colStart + 2] = 64;  // Blue
 			pTexels[rowStart + colStart + 3] = 32;  // Alpha
+			
 		}
+
+		
+			string rowStartString = "rowStart: ";
+			stringstream s;
+			s << rowStartString;
+			s << row;
+			s << " ";
+			s << endl;
+			wstring rSS = s2ws(s.str());
+			OutputDebugString(reinterpret_cast<LPCWSTR>(rSS.c_str()));
 	}
 
 	pTraceTexture->Unmap(D3D10CalcSubresource(0, 0, 1));
