@@ -14,6 +14,9 @@ Sphere::Sphere(Material &material, D3DXVECTOR3 &position, float radius) : Mesh(m
 
 IntersectionInfo Sphere::testIntersection(Ray &ray)
 {
+	
+	
+	
 	return IntersectionInfo();
 }
 

@@ -59,14 +59,19 @@ Ray Raytracer::shootNewRay(int x, int y)
 	worldX = ((2.0f * x) / traceTexDesc.Width) - 1;
 	worldY = -((2.0f * y) / traceTexDesc.Height) + 1;
 	
+	UINT numViewports = 1;
+
 	D3D10_VIEWPORT viewport;
-	d3d.pd3dDevice->RSGetViewports(1, &viewport);
+	d3d.pd3dDevice->RSGetViewports(&numViewports, &viewport);
+
+	D3DXMATRIX world;
+	D3DXMatrixIdentity(&world);
 
 	D3DXVECTOR3 v0;
-	D3DXVec3Unproject(&v0, &D3DXVECTOR3(worldX, worldY, 0), &viewport, &scene.camera.projection, &scene.camera.view, &D3DXMatrixIdentity(NULL));
+	D3DXVec3Unproject(&v0, &D3DXVECTOR3(worldX, worldY, 0), &viewport, &scene.camera.projection, &scene.camera.view, &world);
 
 	D3DXVECTOR3 v1;
-	D3DXVec3Unproject(&v1, &D3DXVECTOR3+(worldX, worldY, 1), &viewport, &scene.camera.projection, &scene.camera.view, &D3DXMatrixIdentity(NULL));
+	D3DXVec3Unproject(&v1, &D3DXVECTOR3(worldX, worldY, 1), &viewport, &scene.camera.projection, &scene.camera.view, &world);
 
 	
 	D3DXVECTOR3 rayDirection = v1 - v0;
@@ -102,12 +107,13 @@ void Raytracer::trace(void)
 		for(UINT col = 0; col < traceTexDesc.Width; col++)
 		{
 			UINT colStart = col * 4;
-			pTexels[rowStart + colStart + 0] = 255; // Red
-			pTexels[rowStart + colStart + 1] = 128; // Green
-			pTexels[rowStart + colStart + 2] = 64;  // Blue
-			pTexels[rowStart + colStart + 3] = 32;  // Alpha
+			D3DXCOLOR tracedColor = scene.trace(shootNewRay(row, col));
+			pTexels[rowStart + colStart + 0] = tracedColor.r; // Red
+			pTexels[rowStart + colStart + 1] = tracedColor.g; // Green
+			pTexels[rowStart + colStart + 2] = tracedColor.b;  // Blue
+			pTexels[rowStart + colStart + 3] = 255;  // Alpha
 
-			shootNewRay(row, col);
+			
 		}
 		
 			/*string rowStartString = "rowStart: ";
