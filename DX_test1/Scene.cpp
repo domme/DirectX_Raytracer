@@ -17,9 +17,18 @@ D3DXCOLOR Scene::trace(Ray &ray)
 {
 	objectInstersectionList.clear();
 
+	int k = ray.startPosition.x;
+	IntersectionInfo info;
+
 	for(int i = 0; i < objectList.size(); i++)
-		if(objectList[i]->testIntersection(ray).hasIntersected)
+	{
+		info = objectList[i]->testIntersection(&ray);
+		if(info.hasIntersected)
 			objectInstersectionList.push_back(objectList[i]);
+	}
+
+
+			
 
 	//was any object hit?
 	if(objectInstersectionList.size() > 0)

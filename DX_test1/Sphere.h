@@ -13,7 +13,7 @@ public:
 	~Sphere(void);
 	
 	float radius;
-	IntersectionInfo testIntersection(Ray &ray);
+	IntersectionInfo testIntersection(Ray* ray);
 	D3DXCOLOR shade(Ray &ray, vector<Light*> &lightList, vector<Mesh*> &objectList);
 	
 };
