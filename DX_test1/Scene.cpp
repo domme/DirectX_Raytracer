@@ -15,15 +15,9 @@ Scene::Scene(std::vector<Mesh*> &objectList,std::vector<Light*> &lightList, Came
 
 D3DXCOLOR Scene::trace(Ray* ray)
 {
-	objectInstersectionList.clear();
-
-	int k = ray->startPosition.x;
-	IntersectionInfo info;
-
 	for(int i = 0; i < objectList.size(); i++)
 	{
-		info = objectList[i]->testIntersection(ray);
-		if(info.hasIntersected)
+		if(objectList[i]->testIntersection(ray).hasIntersected == true)
 			return objectList[i]->shade(ray, &lightList, &objectList);
 	}
 
@@ -47,7 +41,7 @@ D3DXCOLOR Scene::trace(Ray* ray)
 	//}
 
 
-	return D3DXCOLOR();
+	return D3DXCOLOR(128.0f, 128.0f, 128.0f, 255.0f);
 }
 
 

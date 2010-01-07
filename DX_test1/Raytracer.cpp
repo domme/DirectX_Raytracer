@@ -23,20 +23,17 @@ Raytracer::Raytracer(HWND &hWnd, HINSTANCE &hInstance)
 		MessageBox(hWnd, L"D3D init failed", L"FAILURE", MB_OK);
 
 
-	/*Sphere s = Sphere(Material(D3DXCOLOR(255.0f, 0.0f, 0.0f, 255.0f)), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 10.0f);
-	Ray r = Ray(D3DXVECTOR3(0.0f, 0.0f, -100.0f), D3DXVECTOR3(0.0f, 0.0f, 1.0f));
-
-	float intersectionPoint = s.testIntersection(&r).intersectionParameter;*/
-
+	Sphere* s =  new Sphere(Material(D3DXCOLOR(255.0f, 0.0f, 0.0f, 255.0f)), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 20.0f);
+	
 	//Create camera for later use in the scene
-	D3DXVECTOR3 camPosition = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
+	D3DXVECTOR3 camPosition = D3DXVECTOR3(0.0f, 0.0f, -100.0f);
 	D3DXVECTOR3 camLookAt = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
 	D3DXVECTOR3 camUp = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
 	Camera cam = *new Camera(&camPosition, &camLookAt, &camUp);
 	
 	//Create list of objects to appear in the scene
 	vector<Mesh*> objectList;
-	objectList.push_back(new Sphere(Material(D3DXCOLOR(255.0f, 0.0f, 0.0f, 255.0f)), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 10.0f));
+	objectList.push_back(s);
 
 	//Create list of lights to luminate the scene
 	vector<Light*> lightList;
@@ -74,18 +71,17 @@ Ray* Raytracer::shootNewRay(int x, int y)
 	D3D10_VIEWPORT viewport;
 	d3d.pd3dDevice->RSGetViewports(&numViewports, &viewport);
 
-	D3DXMATRIX world;
-	D3DXMatrixIdentity(&world);
 
-	D3DXMATRIX proj = scene.camera.projection;
-	D3DXMATRIX view = scene.camera.view;
+	D3DXVECTOR3 rayStart;
+	D3DXMATRIX identity;
+	D3DXMatrixIdentity(&identity);
+	D3DXVec3Unproject(&rayStart, &D3DXVECTOR3(x, y, 0.0f), &viewport, &scene.camera.projection, &scene.camera.view, &identity);
 
-	D3DXVECTOR3 rayDir = D3DXVECTOR3(2 * (x + 0.5f ) / viewport.Width - 1, 2 * (y ) / viewport.Height - 1, 10.0f);
-	rayDir = rayDir - scene.camera.position;
-	D3DXVECTOR3 normRdir;
-	D3DXVec3Normalize(&normRdir, &rayDir);
+	D3DXVECTOR3 raydir = rayStart - scene.camera.position;
+	D3DXVECTOR3 raydirnorm;
+	D3DXVec3Normalize(&raydirnorm, &raydir);
 
-	return new Ray(D3DXVECTOR3(worldX, worldY, -100.0f), D3DXVECTOR3(0.0f, 0.0f, 1.0f));
+	return new Ray(scene.camera.position, raydirnorm);
 }
 
 void Raytracer::trace(void)
@@ -96,6 +92,7 @@ void Raytracer::trace(void)
 	if(FAILED(pTraceTexture->Map(D3D10CalcSubresource(0, 0, 1), D3D10_MAP_WRITE_DISCARD, 0, &mappedTex)))
 		MessageBox(hWnd, L"Texture Mapping Failed", L"Stupid Omme!", MB_OK);
 
+	D3DXCOLOR tracedColor;
 
 	UCHAR* pTexels = (UCHAR*) mappedTex.pData;
 	for(UINT row = 0; row < traceTexDesc.Height; row++)
@@ -104,23 +101,12 @@ void Raytracer::trace(void)
 		for(UINT col = 0; col < traceTexDesc.Width; col++)
 		{
 			UINT colStart = col * 4;
-			D3DXCOLOR tracedColor = scene.trace(shootNewRay(col, row));
+			tracedColor = scene.trace(shootNewRay(col, row));
 			pTexels[rowStart + colStart + 0] = tracedColor.r; // Red
 			pTexels[rowStart + colStart + 1] = tracedColor.g; // Green
 			pTexels[rowStart + colStart + 2] = tracedColor.b;  // Blue
 			pTexels[rowStart + colStart + 3] = 255;  // Alpha
-			
-			
 		}
-		
-			/*string rowStartString = "rowStart: ";
-			stringstream s;
-			s << rowStartString;
-			s << row;
-			s << " ";
-			s << endl;
-			wstring rSS = s2ws(s.str());
-			OutputDebugString(reinterpret_cast<LPCWSTR>(rSS.c_str()));*/
 	}
 
 	pTraceTexture->Unmap(D3D10CalcSubresource(0, 0, 1));
