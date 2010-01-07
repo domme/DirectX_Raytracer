@@ -15,8 +15,8 @@ Camera::Camera(D3DXVECTOR3* position,D3DXVECTOR3* poi, D3DXVECTOR3* up)
 	D3DXMatrixIdentity(&projection);
 	
 	this->position = *position;
-	D3DXMatrixLookAtLH(&view, position, poi, up);
-	D3DXMatrixPerspectiveFovLH(&projection, 3.14159f/4.0f , 1.3333f, 0.1f, 100.0f);
+	D3DXMatrixLookAtRH(&view, position, poi, up);
+	D3DXMatrixPerspectiveFovRH(&projection, 3.14159f/6.0f , 1.3333f, 0.1f, 10000.0f);
 }
 
 Camera::~Camera(void)

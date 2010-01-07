@@ -19,7 +19,7 @@ public:
 	Camera camera;
 	vector<Mesh*>objectList;
 	vector<Light*>lightList;
-	D3DXCOLOR trace(Ray &ray);
+	D3DXCOLOR trace(Ray* ray);
 
 private:
 	vector<Mesh*> objectInstersectionList;

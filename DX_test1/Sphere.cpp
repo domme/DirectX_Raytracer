@@ -15,58 +15,38 @@ Sphere::Sphere(Material &material, D3DXVECTOR3 &position, float radius) : Mesh(m
 IntersectionInfo Sphere::testIntersection(Ray* ray)
 {
 	IntersectionInfo returnInfo;
-	float k, k1, k2;
-	float A, B, C;
-	
-	A = D3DXVec3Dot(&ray->direction, &ray->direction); 
-	B = 2 * D3DXVec3Dot(&ray->direction, &ray->startPosition);
-	C = D3DXVec3Dot( &ray->startPosition, &ray->startPosition) - radius * radius;
+	returnInfo.hasIntersected = false;
 
-	float disc = B * B - 4 * A * C;
+	float B, C, t0, t1;
+	B = 2 * (ray->direction.x * (ray->startPosition.x - position.x) + ray->direction.y * (ray->startPosition.y - position.y) + ray->direction.z * (ray->startPosition.z - position.z));
+	C = pow((ray->startPosition.x - position.x), 2) + pow((ray->startPosition.y - position.y), 2) + pow((ray->startPosition.z - position.z), 2) - radius * radius;
 
-	if (disc < 0)
-		return returnInfo;
+	float determina = B * B - 4 * C;
 
-	float discSqrt = sqrtf(disc);
-	float q;
+	if(determina < 0)
+		return returnInfo; //no hit
 
-	if(B < 0)
-		q = (-B - discSqrt) / 2.0f;
-	else
-		q = (-B + discSqrt) / 2.0f;
+	t0 = (-B + sqrtf(determina))/2.0f;
+	t1 = (-B - sqrtf(determina))/2.0f;
 
-	float t0 = q/ A;
-	float t1 = C/ q;
-
-	if( t0 > t1)
+	if(t0 < t1)
 	{
-		float temp = t0;
-		t0 = t1;
-		t1 = temp;
-	}
-
-	if (t1 < 0)
-		return returnInfo;
-
-	if( t0 < 0)
-	{
-		returnInfo.intersectionParameter = t1;
 		returnInfo.hasIntersected = true;
-		return returnInfo;
-	}
-
-	else
-	{
 		returnInfo.intersectionParameter = t0;
-		returnInfo.hasIntersected = true;
 		return returnInfo;
 	}
-	
-	
+
+	if(t1 < t0)
+	{
+		returnInfo.hasIntersected = true;
+		returnInfo.intersectionParameter = t1;
+		return returnInfo;
+	}
+
 	return returnInfo;
 }
 
-D3DXCOLOR Sphere::shade(Ray &ray, vector<Light*> &lightList, vector<Mesh*> &objectList)
+D3DXCOLOR Sphere::shade(Ray* ray, vector<Light*>* lightList, vector<Mesh*>* objectList)
 {
 	return this->material.color;
 }

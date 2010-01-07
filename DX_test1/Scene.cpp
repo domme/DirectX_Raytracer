@@ -13,18 +13,18 @@ Scene::Scene(std::vector<Mesh*> &objectList,std::vector<Light*> &lightList, Came
 	this->camera = camera;
 }
 
-D3DXCOLOR Scene::trace(Ray &ray)
+D3DXCOLOR Scene::trace(Ray* ray)
 {
 	objectInstersectionList.clear();
 
-	int k = ray.startPosition.x;
+	int k = ray->startPosition.x;
 	IntersectionInfo info;
 
 	for(int i = 0; i < objectList.size(); i++)
 	{
-		info = objectList[i]->testIntersection(&ray);
+		info = objectList[i]->testIntersection(ray);
 		if(info.hasIntersected)
-			return objectList[i]->shade(ray, lightList, objectList);
+			return objectList[i]->shade(ray, &lightList, &objectList);
 	}
 
 	

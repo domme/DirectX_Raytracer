@@ -28,7 +28,7 @@ private:
 	D3D10_BOX sourceRegion;
 
 	void initTracing(void);
-	Ray shootNewRay(int x, int y);
+	Ray* shootNewRay(int x, int y);
 	
 
 };

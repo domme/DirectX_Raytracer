@@ -14,6 +14,6 @@ public:
 	
 	float radius;
 	IntersectionInfo testIntersection(Ray* ray);
-	D3DXCOLOR shade(Ray &ray, vector<Light*> &lightList, vector<Mesh*> &objectList);
+	D3DXCOLOR shade(Ray* ray, vector<Light*>* lightList, vector<Mesh*>* objectList);
 	
 };
