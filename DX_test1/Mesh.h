@@ -13,7 +13,7 @@ class Mesh
 public:
 	Mesh(void);
 	Mesh(Material &material, D3DXVECTOR3 &position);
-	~Mesh(void);
+	virtual ~Mesh(void);
 
 	Material material;
 	D3DXVECTOR3 position;
@@ -21,6 +21,4 @@ public:
 	virtual IntersectionInfo testIntersection(Ray* ray) = 0;
 
 	virtual D3DXCOLOR shade(Ray &ray, vector<Light*> &lightList, vector<Mesh*> &objectList) = 0;
-	
-	
 };

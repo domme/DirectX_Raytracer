@@ -24,27 +24,27 @@ D3DXCOLOR Scene::trace(Ray &ray)
 	{
 		info = objectList[i]->testIntersection(&ray);
 		if(info.hasIntersected)
-			objectInstersectionList.push_back(objectList[i]);
+			return objectList[i]->shade(ray, lightList, objectList);
 	}
 
+	
+	////was any object hit?
+	//if(objectInstersectionList.size() > 0)
+	//{
+	//	float minZ = objectInstersectionList[0]->position.z;
 
-			
+	//	for(int i = 0; i < objectInstersectionList.size(); i++)
+	//		if(objectInstersectionList[i]->position.z < minZ)
+	//			minZ = objectInstersectionList[i]->position.z;
 
-	//was any object hit?
-	if(objectInstersectionList.size() > 0)
-	{
-		float minZ = objectInstersectionList[0]->position.z;
+	//	Mesh* hitMesh;
 
-		for(int i = 0; i < objectInstersectionList.size(); i++)
-			if(objectInstersectionList[i]->position.z < minZ)
-				minZ = objectInstersectionList[i]->position.z;
+	//	for(int i = 0; i < objectInstersectionList.size(); i++)
+	//		if(objectInstersectionList[i]->position.z == minZ)
+	//			hitMesh = objectInstersectionList[i];
 
-		Mesh* hitMesh;
-
-		for(int i = 0; i < objectInstersectionList.size(); i++)
-			if(objectInstersectionList[i]->position.z == minZ)
-				hitMesh = objectInstersectionList[i];
-	}
+	//	return hitMesh->shade(ray, lightList, objectList);
+	//}
 
 
 	return D3DXCOLOR();

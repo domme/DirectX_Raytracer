@@ -14,22 +14,54 @@ Sphere::Sphere(Material &material, D3DXVECTOR3 &position, float radius) : Mesh(m
 
 IntersectionInfo Sphere::testIntersection(Ray* ray)
 {
-	float bias = 0.01f;
 	IntersectionInfo returnInfo;
-	float k;
+	float k, k1, k2;
+	float A, B, C;
 	
-	//calculate intersection coefficient ray<->sphere
-	k = (pow(radius, 2) - pow((ray->startPosition.x - position.x), 2) - pow((ray->startPosition.y - position.y), 2) - pow((ray->startPosition.z - position.z), 2)) 
-		/ (pow(ray->direction.x, 2) + pow(ray->direction.y, 2) + pow(ray->direction.z, 2));
+	A = D3DXVec3Dot(&ray->direction, &ray->direction); 
+	B = 2 * D3DXVec3Dot(&ray->direction, &ray->startPosition);
+	C = D3DXVec3Dot( &ray->startPosition, &ray->startPosition) - radius * radius;
 
-	if((ray->startPosition + k*ray->direction) < D3DXVECTOR3(bias, bias, bias))
+	float disc = B * B - 4 * A * C;
+
+	if (disc < 0)
+		return returnInfo;
+
+	float discSqrt = sqrtf(disc);
+	float q;
+
+	if(B < 0)
+		q = (-B - discSqrt) / 2.0f;
+	else
+		q = (-B + discSqrt) / 2.0f;
+
+	float t0 = q/ A;
+	float t1 = C/ q;
+
+	if( t0 > t1)
 	{
+		float temp = t0;
+		t0 = t1;
+		t1 = temp;
+	}
+
+	if (t1 < 0)
+		return returnInfo;
+
+	if( t0 < 0)
+	{
+		returnInfo.intersectionParameter = t1;
 		returnInfo.hasIntersected = true;
-		returnInfo.intersectionParameter = k;
+		return returnInfo;
+	}
+
+	else
+	{
+		returnInfo.intersectionParameter = t0;
+		returnInfo.hasIntersected = true;
+		return returnInfo;
 	}
 	
-	else
-		returnInfo.hasIntersected = false;
 	
 	return returnInfo;
 }

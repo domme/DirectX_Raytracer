@@ -23,21 +23,21 @@ Raytracer::Raytracer(HWND &hWnd, HINSTANCE &hInstance)
 		MessageBox(hWnd, L"D3D init failed", L"FAILURE", MB_OK);
 
 	//Create camera for later use in the scene
-	D3DXVECTOR3 camPosition = D3DXVECTOR3(0.0f, 0.0f, - 20.0f);
-	D3DXVECTOR3 camLookAt = D3DXVECTOR3(0.0f, 0.0f, 20.0f);
+	D3DXVECTOR3 camPosition = D3DXVECTOR3(0.0f, 0.0f,  -200.0f);
+	D3DXVECTOR3 camLookAt = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
 	D3DXVECTOR3 camUp = D3DXVECTOR3(0.0f, 1.0f, 0.0f);
-	Camera cam = Camera(camPosition, camLookAt, camUp);
+	Camera cam = *new Camera(&camPosition, &camLookAt, &camUp);
 	
 	//Create list of objects to appear in the scene
 	vector<Mesh*> objectList;
-	objectList.push_back(&Sphere(Material(D3DXCOLOR(255.0f, 0.0f, 0.0f, 255.0f)), D3DXVECTOR3(0.0f, 0.0f, 10.0f), 10.0f));
+	objectList.push_back(new Sphere(Material(D3DXCOLOR(255.0f, 0.0f, 0.0f, 255.0f)), D3DXVECTOR3(0.0f, 0.0f, 0.0f), .5f));
 
 	//Create list of lights to luminate the scene
 	vector<Light*> lightList;
-	lightList.push_back(&Light());
+	lightList.push_back(new Light());
 
 	//and finally create the scene we're going to raytrace
-	scene = Scene(objectList,lightList, cam);
+	scene = *new Scene(objectList,lightList, cam);
 }
 
 std::wstring Raytracer::s2ws(const std::string& s)
@@ -56,11 +56,15 @@ Ray Raytracer::shootNewRay(int x, int y)
 {
 	float worldX, worldY;
 
-	worldX = ((2.0f * x) / traceTexDesc.Width) - 1;
-	worldY = -((2.0f * y) / traceTexDesc.Height) + 1;
+	worldX = x;
+	worldY = y;
+
+	/*worldX = ((2.0f * x) / traceTexDesc.Width) - 1;
+	worldY = -((2.0f * y) / traceTexDesc.Height) + 1;*/
 	
 	UINT numViewports = 1;
 
+	
 	D3D10_VIEWPORT viewport;
 	d3d.pd3dDevice->RSGetViewports(&numViewports, &viewport);
 
@@ -68,10 +72,11 @@ Ray Raytracer::shootNewRay(int x, int y)
 	D3DXMatrixIdentity(&world);
 
 	D3DXVECTOR3 v0;
-	D3DXVec3Unproject(&v0, &D3DXVECTOR3(worldX, worldY, 0), &viewport, &scene.camera.projection, &scene.camera.view, &world);
+	D3DXVec3Unproject(&v0, new D3DXVECTOR3(worldX, worldY, 0), &viewport, &scene.camera.projection, &scene.camera.view, &world);
+	
 
 	D3DXVECTOR3 v1;
-	D3DXVec3Unproject(&v1, &D3DXVECTOR3(worldX, worldY, 1), &viewport, &scene.camera.projection, &scene.camera.view, &world);
+	D3DXVec3Unproject(&v1, new D3DXVECTOR3(worldX, worldY, 1), &viewport, &scene.camera.projection, &scene.camera.view, &world);
 
 	
 	D3DXVECTOR3 rayDirection = v1 - v0;
@@ -87,6 +92,8 @@ Ray Raytracer::shootNewRay(int x, int y)
 	s << endl;
 	wstring ws = s2ws(s.str());
 	OutputDebugString(reinterpret_cast<LPCWSTR>(ws.c_str()));*/
+	//worldX = ((2.0f * x) / traceTexDesc.Width) - 1;
+	//worldY = -((2.0f * y) / traceTexDesc.Height) + 1;
 
 	return Ray(scene.camera.position, normRayDir);
 }
@@ -107,7 +114,7 @@ void Raytracer::trace(void)
 		for(UINT col = 0; col < traceTexDesc.Width; col++)
 		{
 			UINT colStart = col * 4;
-			D3DXCOLOR tracedColor = scene.trace(shootNewRay(row, col));
+			D3DXCOLOR tracedColor = scene.trace(shootNewRay(col, row));
 			pTexels[rowStart + colStart + 0] = tracedColor.r; // Red
 			pTexels[rowStart + colStart + 1] = tracedColor.g; // Green
 			pTexels[rowStart + colStart + 2] = tracedColor.b;  // Blue

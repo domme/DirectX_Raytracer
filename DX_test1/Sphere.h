@@ -10,7 +10,7 @@ class Sphere :
 public:
 	Sphere(void);
 	Sphere(Material &material, D3DXVECTOR3 &position, float radius);
-	~Sphere(void);
+	virtual ~Sphere(void);
 	
 	float radius;
 	IntersectionInfo testIntersection(Ray* ray);
