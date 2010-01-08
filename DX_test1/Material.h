@@ -9,6 +9,7 @@ public:
 	~Material(void);
 
 	D3DXCOLOR color;
+	float kd;
 
 
 };

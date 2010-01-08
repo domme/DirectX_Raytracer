@@ -1,4 +1,5 @@
 #pragma once
+#include "D3D.h"
 
 class IntersectionInfo
 {
@@ -8,4 +9,7 @@ public:
 
 	bool hasIntersected;
 	float intersectionParameter;
+	D3DXVECTOR3 intersectionPoint;
+	D3DXVECTOR3 intersectionNormal;
+
 };

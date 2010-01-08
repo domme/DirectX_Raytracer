@@ -15,6 +15,12 @@ Ray::Ray(D3DXVECTOR3 &startPosition, D3DXVECTOR3 &direction)
 	this->intersectionParameter = 1.0f;
 }
 
+
+D3DXVECTOR3 Ray::calculateIntersectionPoint()
+{
+	return (this->startPosition + intersectionParameter * this->direction);
+}
+
 Ray::~Ray(void)
 {
 }

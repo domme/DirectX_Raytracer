@@ -23,8 +23,9 @@ Raytracer::Raytracer(HWND &hWnd, HINSTANCE &hInstance)
 		MessageBox(hWnd, L"D3D init failed", L"FAILURE", MB_OK);
 
 
-	Sphere* s =  new Sphere(Material(D3DXCOLOR(255.0f, 0.0f, 0.0f, 255.0f)), D3DXVECTOR3(0.0f, 0.0f, 0.0f), 20.0f);
-	
+	Sphere* s =  new Sphere(Material(D3DXCOLOR(255.0f, 0.0f, 0.0f, 255.0f)), D3DXVECTOR3(20.0f, 0.0f, 0.0f), 20.0f);
+	Sphere* s2 = new Sphere(Material(D3DXCOLOR(0.0f, 255.0f, 0.0f, 255.0f)), D3DXVECTOR3(-20.0f, 0.0f, 0.0f), 5.0f);
+		
 	//Create camera for later use in the scene
 	D3DXVECTOR3 camPosition = D3DXVECTOR3(0.0f, 0.0f, -100.0f);
 	D3DXVECTOR3 camLookAt = D3DXVECTOR3(0.0f, 0.0f, 1.0f);
@@ -34,6 +35,7 @@ Raytracer::Raytracer(HWND &hWnd, HINSTANCE &hInstance)
 	//Create list of objects to appear in the scene
 	vector<Mesh*> objectList;
 	objectList.push_back(s);
+	objectList.push_back(s2);
 
 	//Create list of lights to luminate the scene
 	vector<Light*> lightList;

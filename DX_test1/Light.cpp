@@ -3,7 +3,7 @@
 
 Light::Light(void)
 {
-	this->position = D3DXVECTOR3(-20.0f, 50.0f, 30.0f);
+	this->position = D3DXVECTOR3(-50.0f, 100.0f, -50.0f);
 	this->ambientColor = D3DXCOLOR(128.0f, 128.0f, 128.0f, 128.0f);
 	this->ambientIntensity = 0.3f;
 	this->diffuseColor = D3DXCOLOR(255.0f, 255.0f, 255.0f, 255.0f);

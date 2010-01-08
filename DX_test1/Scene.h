@@ -23,6 +23,7 @@ public:
 
 private:
 	vector<Mesh*> objectInstersectionList;
+	bool checkObjectList();
 
 	
 
