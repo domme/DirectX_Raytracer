@@ -1,13 +1,15 @@
 #include "StdAfx.h"
 #include "Mesh.h"
+#include "LambertMaterial.h"
+
 
 Mesh::Mesh(void)
 {
-	material = Material();
+	material = new LambertMaterial();
 
 }
 
-Mesh::Mesh(Material &material, D3DXVECTOR3 &position)
+Mesh::Mesh(Material* material, D3DXVECTOR3 &position)
 {
 	this->material = material;
 	this->position = position;

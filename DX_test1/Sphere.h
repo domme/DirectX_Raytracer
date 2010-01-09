@@ -9,7 +9,7 @@ class Sphere :
 {
 public:
 	Sphere(void);
-	Sphere(Material &material, D3DXVECTOR3 &position, float radius);
+	Sphere(Material* material, D3DXVECTOR3 &position, float radius);
 	virtual ~Sphere(void);
 	
 	float radius;

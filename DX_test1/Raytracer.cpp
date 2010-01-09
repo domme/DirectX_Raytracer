@@ -7,6 +7,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include "LambertMaterial.h"
 
 using namespace std;
 
@@ -23,8 +24,8 @@ Raytracer::Raytracer(HWND &hWnd, HINSTANCE &hInstance)
 		MessageBox(hWnd, L"D3D init failed", L"FAILURE", MB_OK);
 
 
-	Sphere* s =  new Sphere(Material(D3DXCOLOR(255.0f, 0.0f, 0.0f, 255.0f)), D3DXVECTOR3(20.0f, 0.0f, 0.0f), 20.0f);
-	Sphere* s2 = new Sphere(Material(D3DXCOLOR(0.0f, 255.0f, 0.0f, 255.0f)), D3DXVECTOR3(-20.0f, 0.0f, 0.0f), 5.0f);
+	Sphere* s =  new Sphere(new LambertMaterial(D3DXCOLOR(255.0f, 0.0f, 0.0f, 255.0f)), D3DXVECTOR3(20.0f, 0.0f, 0.0f), 20.0f);
+	Sphere* s2 = new Sphere(new LambertMaterial(D3DXCOLOR(0.0f, 255.0f, 0.0f, 255.0f)), D3DXVECTOR3(-20.0f, 0.0f, 0.0f), 5.0f);
 		
 	//Create camera for later use in the scene
 	D3DXVECTOR3 camPosition = D3DXVECTOR3(0.0f, 0.0f, -100.0f);

@@ -6,14 +6,11 @@
 Sphere::Sphere(void) 
 {
 	radius = 1.0f;
-
-	
 }
 
-Sphere::Sphere(Material &material, D3DXVECTOR3 &position, float radius) : Mesh(material, position)
+Sphere::Sphere(Material* material, D3DXVECTOR3 &position, float radius) : Mesh(material, position)
 {
 	this->radius = radius;
-	
 }
 
 IntersectionInfo Sphere::testIntersection(Ray* ray)
@@ -60,42 +57,7 @@ IntersectionInfo Sphere::testIntersection(Ray* ray)
 
 D3DXCOLOR Sphere::shade(vector<Light*>* lightList, vector<Mesh*>* objectList)
 {
-	
-
-	D3DXCOLOR returnColor(0.0f, 0.0f, 0.0f, 0.0f); //start with black
-	vector<Light*> lights = *lightList;
-	D3DXVECTOR3 L, Lnorm;
-	D3DXVECTOR3 N = info.intersectionNormal;
-	D3DXCOLOR Ca;
-	float	  Ia;
-	float	  kd = material.kd;
-	D3DXCOLOR Da;
-	float	  Id;
-	float I = 0;
-
-	
-	for( int i = 0; i < lights.size(); i++)
-	{
-		Ca = lights[i]->ambientColor;
-		Ia = lights[i]->ambientIntensity;
-		Da = lights[i]->diffuseColor;
-		
-		L = lights[i]->position - info.intersectionPoint;
-		D3DXVec3Normalize(&Lnorm, &L);
-		float dot = D3DXVec3Dot(&N, &Lnorm);
-		if(dot < 0.0f)
-			dot = 0.0f;
-		if(dot > 1.0f)
-			dot = 1.0f;
-		I +=  kd * dot;
-	}
-	
-	I +=  Ia;
-	if(I > 1.0f)
-		I = 1.0f;
-	return material.color * I;
-
-//	return material.color;
+	return material->shade(lightList, objectList, this);
 }
 
 Sphere::~Sphere(void)
