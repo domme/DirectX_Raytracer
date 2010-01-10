@@ -22,15 +22,18 @@ PhongMaterial::PhongMaterial(D3DXCOLOR &color)
 PhongMaterial::PhongMaterial(D3DXCOLOR &color, float ks, float kse)
 {
 	this->color = color;
-	this->kd = .5f;
+	this->kd = 1.0f;
 	this->ks = ks;
 	this->kse = kse;
 }
 
 D3DXCOLOR PhongMaterial::shade(vector<Light*>* lightList, vector<Mesh*>* objectList, Mesh* object, Camera* cam)
 {
-	float I = 0;
+	float Idiff, Ispec;
+	Idiff = 0.0f;
+	Ispec = 0.0f;
 	D3DXCOLOR returnColor = color;
+	D3DXCOLOR specularColor = D3DXCOLOR(255.0f, 255.0f, 255.0f, 255.0f);
 	D3DXVECTOR3 L, Lnorm, R, Rnorm, V, Vnorm;
 	V = cam->position - object->info.intersectionPoint;
 	D3DXVec3Normalize(&Vnorm, &V);
@@ -65,20 +68,39 @@ D3DXCOLOR PhongMaterial::shade(vector<Light*>* lightList, vector<Mesh*>* objectL
 				sDot = 0.0f;
 			if(sDot > 1.0f)
 				sDot = 1.0f;
+			
+			Ispec += ks * pow(sDot, kse);
 
+			if(Ispec > 1.0f)
+				Ispec = 1.0f;
+			if(Ispec < 0.0f)
+				Ispec = 0.0f;
 		
-			I += kd * dDot + ks * pow(sDot, kse);
+			Idiff += kd * dDot;
 			//I +=  ks * pow(sDot, kse);
 		}
 	}
 	
 	if(inShadow)
-		I = lights[0]->ambientIntensity.x;
+		Idiff = lights[0]->ambientIntensity.x;
 
 	else
-		I += lights[0]->ambientIntensity.x;
+		Idiff += lights[0]->ambientIntensity.x;
 
-	return returnColor * I;
+	returnColor *= Idiff;
+	specularColor *= Ispec;
+
+	D3DXCOLOR addedColor;
+	D3DXColorAdd(&addedColor, &returnColor, &specularColor);
+
+	if(addedColor.r > 255.0f)
+		addedColor.r = 255.0f;
+	if(addedColor.g > 255.0f)
+		addedColor.g = 255.0f;
+	if(addedColor.b > 255.0f)
+		addedColor.b = 255.0f;
+
+	return addedColor;
 }
 
 PhongMaterial::~PhongMaterial(void)

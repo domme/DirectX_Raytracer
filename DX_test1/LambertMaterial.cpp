@@ -17,73 +17,51 @@ LambertMaterial::LambertMaterial(D3DXCOLOR &color)
 
 D3DXCOLOR LambertMaterial::shade(vector<Light *> *lightList, vector<Mesh *> *objectList, Mesh *object, Camera* cam)
 {
-	D3DXCOLOR returnColor(0.0f, 0.0f, 0.0f, 0.0f); //start with black
-	vector<Light*> lights = *lightList;
+	float Idiff;
+	Idiff = 0.0f;
+	D3DXCOLOR returnColor = color;
 	D3DXVECTOR3 L, Lnorm;
-	D3DXVECTOR3 N = object->info.intersectionNormal;
-	D3DXCOLOR Ca;
-	D3DXVECTOR3 Ia;
-	D3DXCOLOR Da;
-	float	  Id;
-	D3DXVECTOR3 I(0.0f, 0.0f, 0.0f);
 	bool inShadow = false;
+	vector<Mesh*> objs = *objectList;
+	vector<Light*> lights = *lightList;
 
-	
-	for( int i = 0; i < lights.size(); i++)
+	for(int l = 0; l < lights.size(); l++)
 	{
-		inShadow = false;
-		Ca = lights[i]->ambientColor;
-		Ia = lights[i]->ambientIntensity;
-		Da = lights[i]->diffuseColor;
-		
-		L = lights[i]->position - object->info.intersectionPoint;
+		L = lights[l]->position - object->info.intersectionPoint;
 		D3DXVec3Normalize(&Lnorm, &L);
 
 		Ray lightRay(object->info.intersectionPoint, Lnorm);
-		vector<Mesh*> objList = *objectList;
 
-		for(int j = 0; j < objList.size(); j++)
-			if(objList[j]->testIntersection(&lightRay).hasIntersected)
+		for(int i = 0; i < objs.size(); i++)
+			if(objs[i]->testIntersection(&lightRay).hasIntersected)
 				inShadow = true;
 
 		if(!inShadow)
 		{
-			float dot = D3DXVec3Dot(&N, &Lnorm);
-			if(dot < 0.0f)
-				dot = 0.0f;
-			if(dot > 1.0f)
-				dot = 1.0f;
+			float dDot = D3DXVec3Dot(&object->info.intersectionNormal, &Lnorm);
+			if(dDot < 0.0f)
+				dDot = 0.0f;
+			if(dDot > 1.0f)
+				dDot = 1.0f;
 		
-		
-			float addI = kd * dot;
-
-			I.x +=   addI;
-			I.y +=   addI;
-			I.z +=   addI;
-		
+			Idiff += kd * dDot;
 		}
 	}
 	
 	if(inShadow)
-		I = Ia; //set intensity to ambient part
+		Idiff = lights[0]->ambientIntensity.x;
 
 	else
-		I +=  Ia; //add ambient part to calculated intensity
+		Idiff += lights[0]->ambientIntensity.x;
 
-	if(I.x > 1.0f)
-		I.x = 1.0f;
-	
-	if(I.y > 1.0f)
-		I.y = 1.0f;
+	returnColor *= Idiff;
+	if(returnColor.r > 255.0f)
+		returnColor.r = 255.0f;
+	if(returnColor.g > 255.0f)
+		returnColor.g = 255.0f;
+	if(returnColor.b > 255.0f)
+		returnColor.b = 255.0f;
 
-	if(I.z > 1.0f)
-		I.z = 1.0f;
-
-
-	returnColor.r =   color * I.x;
-	returnColor.g =   color * I.y;
-	returnColor.b =   color * I.z;
-
-	return  returnColor;
+	return returnColor;
 
 }
