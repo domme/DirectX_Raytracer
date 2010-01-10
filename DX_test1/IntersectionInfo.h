@@ -11,5 +11,6 @@ public:
 	float intersectionParameter;
 	D3DXVECTOR3 intersectionPoint;
 	D3DXVECTOR3 intersectionNormal;
+	D3DXVECTOR3 intersectionNormalLong;
 
 };

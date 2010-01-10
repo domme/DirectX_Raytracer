@@ -9,7 +9,7 @@ public:
 	LambertMaterial(D3DXCOLOR &color);
 	~LambertMaterial(void);
 
-	float kd;
-	D3DXCOLOR shade(vector<Light*>* lightList, vector<Mesh*>* objectList, Mesh* object);
+	
+	D3DXCOLOR shade(vector<Light*>* lightList, vector<Mesh*>* objectList, Mesh* object, Camera* cam);
 
 };

@@ -90,7 +90,7 @@ D3DXCOLOR Scene::trace(Ray* ray)
 				hitMesh = objectInstersectionList[i];
 		}
 
-		return hitMesh->shade(&lightList, &objectList);
+		return hitMesh->shade(&lightList, &objectList, &camera);
 	}
 
 

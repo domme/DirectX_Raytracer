@@ -206,6 +206,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\PhongMaterial.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\Ray.cpp"
 				>
 			</File>
@@ -277,6 +281,10 @@
 			</File>
 			<File
 				RelativePath=".\Mesh.h"
+				>
+			</File>
+			<File
+				RelativePath=".\PhongMaterial.h"
 				>
 			</File>
 			<File

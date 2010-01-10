@@ -30,24 +30,26 @@ IntersectionInfo Sphere::testIntersection(Ray* ray)
 	t0 = (-B + sqrtf(determina))/2.0f;
 	t1 = (-B - sqrtf(determina))/2.0f;
 
-	if(t0 < t1 && t0 > 0.1f)
+	if(t0 < t1 && t0 > 0.0f)
 	{
 		returnInfo.hasIntersected = true;
 		returnInfo.intersectionParameter = t0;
 		ray->intersectionParameter = t0;
 		returnInfo.intersectionPoint = ray->calculateIntersectionPoint();
 		D3DXVECTOR3 intersectionNormal = returnInfo.intersectionPoint - position;
+		returnInfo.intersectionNormalLong = intersectionNormal;
 		D3DXVec3Normalize(&returnInfo.intersectionNormal, &intersectionNormal);
 		return returnInfo;
 	}
 
-	if(t1 <= t0 && t1 > 0.1f)
+	if(t1 <= t0 && t1 > 0.0f)
 	{
 		returnInfo.hasIntersected = true;
 		returnInfo.intersectionParameter = t1;
 		ray->intersectionParameter = t1;
 		returnInfo.intersectionPoint = ray->calculateIntersectionPoint();
 		D3DXVECTOR3 intersectionNormal = returnInfo.intersectionPoint - position;
+		returnInfo.intersectionNormalLong = intersectionNormal;
 		D3DXVec3Normalize(&returnInfo.intersectionNormal, &intersectionNormal);
 		return returnInfo;
 	}
@@ -55,9 +57,9 @@ IntersectionInfo Sphere::testIntersection(Ray* ray)
 	return returnInfo;
 }
 
-D3DXCOLOR Sphere::shade(vector<Light*>* lightList, vector<Mesh*>* objectList)
+D3DXCOLOR Sphere::shade(vector<Light*>* lightList, vector<Mesh*>* objectList, Camera* cam)
 {
-	return material->shade(lightList, objectList, this);
+	return material->shade(lightList, objectList, this, cam);
 }
 
 Sphere::~Sphere(void)

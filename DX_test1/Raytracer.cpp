@@ -8,6 +8,7 @@
 #include <string>
 #include <sstream>
 #include "LambertMaterial.h"
+#include "PhongMaterial.h"
 
 using namespace std;
 
@@ -24,8 +25,8 @@ Raytracer::Raytracer(HWND &hWnd, HINSTANCE &hInstance)
 		MessageBox(hWnd, L"D3D init failed", L"FAILURE", MB_OK);
 
 
-	Sphere* s =  new Sphere(new LambertMaterial(D3DXCOLOR(255.0f, 0.0f, 0.0f, 255.0f)), D3DXVECTOR3(20.0f, 0.0f, 0.0f), 20.0f);
-	Sphere* s2 = new Sphere(new LambertMaterial(D3DXCOLOR(0.0f, 255.0f, 0.0f, 255.0f)), D3DXVECTOR3(-20.0f, 0.0f, 0.0f), 5.0f);
+	Sphere* s =  new Sphere(new PhongMaterial(D3DXCOLOR(200.0f, 2.0f, 2.0f, 255.0f), .8f, 5.0f), D3DXVECTOR3(20.0f, 0.0f, 0.0f), 20.0f);
+	Sphere* s2 = new Sphere(new LambertMaterial(D3DXCOLOR(255.0f, 0.0f, 0.0f, 255.0f)), D3DXVECTOR3(-20.0f, 0.0f, 0.0f), 20.0f);
 		
 	//Create camera for later use in the scene
 	D3DXVECTOR3 camPosition = D3DXVECTOR3(0.0f, 0.0f, -100.0f);
@@ -36,11 +37,11 @@ Raytracer::Raytracer(HWND &hWnd, HINSTANCE &hInstance)
 	//Create list of objects to appear in the scene
 	vector<Mesh*> objectList;
 	objectList.push_back(s);
-	objectList.push_back(s2);
+	//objectList.push_back(s2);
 
 	//Create list of lights to luminate the scene
 	vector<Light*> lightList;
-	lightList.push_back(new Light());
+	lightList.push_back(new Light(D3DXVECTOR3(-100.0f, 100.0f, -100.0f), D3DXCOLOR(255.0f, 255.0f, 255.0f, 255.0f), D3DXCOLOR(255.0f, 255.0f, 255.0f, 255.0f), 1.0f, 0.2f));
 
 	//and finally create the scene we're going to raytrace
 	scene = *new Scene(objectList,lightList, cam);

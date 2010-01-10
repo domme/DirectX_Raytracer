@@ -5,7 +5,7 @@ Light::Light(void)
 {
 	this->position = D3DXVECTOR3(-50.0f, 100.0f, -50.0f);
 	this->ambientColor = D3DXCOLOR(128.0f, 128.0f, 128.0f, 128.0f);
-	this->ambientIntensity = 0.1f;
+	this->ambientIntensity = D3DXVECTOR3(.4f, .4f, .4f);
 	this->diffuseColor = D3DXCOLOR(255.0f, 255.0f, 255.0f, 255.0f);
 	this->diffuseIntensity = 1.0f;
 }
@@ -16,7 +16,7 @@ Light::Light(D3DXVECTOR3 &position, D3DXCOLOR &diffuseColor, D3DXCOLOR &ambientC
 	this->diffuseColor = diffuseColor;
 	this->ambientColor = ambientColor;
 	this->diffuseIntensity = diffuseIntensity;
-	this->ambientIntensity = ambientIntensity;
+	this->ambientIntensity = D3DXVECTOR3(ambientIntensity, ambientIntensity, ambientIntensity);
 }
 
 Light::~Light(void)

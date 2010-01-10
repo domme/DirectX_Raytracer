@@ -12,6 +12,6 @@ public:
 	D3DXCOLOR diffuseColor;
 	D3DXCOLOR ambientColor;
 	float diffuseIntensity;
-	float ambientIntensity;
+	D3DXVECTOR3 ambientIntensity;
 
 };

@@ -16,6 +16,8 @@ Mesh::Mesh(Material* material, D3DXVECTOR3 &position)
 }
 
 
+
+
 Mesh::~Mesh(void)
 {
 }

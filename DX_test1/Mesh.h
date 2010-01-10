@@ -5,6 +5,7 @@
 #include <vector>
 #include "Light.h"
 #include "Material.h"
+#include "Camera.h"
 
 using namespace std;
 
@@ -23,5 +24,5 @@ public:
 	virtual IntersectionInfo testIntersection(Ray* ray) = 0;
 	
 
-	virtual D3DXCOLOR shade(vector<Light*>* lightList, vector<Mesh*>* objectList) = 0;
+	virtual D3DXCOLOR shade(vector<Light*>* lightList, vector<Mesh*>* objectList, Camera* cam)  = 0;
 };
